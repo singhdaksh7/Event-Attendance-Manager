@@ -24,9 +24,10 @@ export default function Navbar({ profile }: { profile: Profile }) {
     { label: 'Dashboard', href: dash },
     { label: 'Profile',   href: '/profile' },
     ...(profile.role === 'faculty' || profile.role === 'hod' ? [
-      { label: 'Timetable',     href: '/admin/timetable' },
-      { label: 'Teachers',      href: '/admin/teachers' },
-      { label: 'Notifications', href: '/admin/notifications' },
+      { label: 'Timetable',        href: '/admin/timetable' },
+      { label: 'Import timetable', href: '/admin/timetable-import' },
+      { label: 'Teachers',         href: '/admin/teachers' },
+      { label: 'Notifications',    href: '/admin/notifications' },
     ] : []),
   ]
 

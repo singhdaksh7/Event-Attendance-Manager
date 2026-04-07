@@ -180,7 +180,10 @@ export default function TimetablePage() {
             <h1>Timetable Manager</h1>
             <p style={{ fontSize:13, color:'var(--t3)', marginTop:4 }}>Departments → Sections → Timetable</p>
           </div>
-          <Link href="/admin/notifications"><button className="btn btn-ghost btn-sm">Notifications →</button></Link>
+          <div style={{ display:'flex', gap:8 }}>
+            <Link href="/admin/timetable-import"><button className="btn btn-primary btn-sm">↑ Import Excel</button></Link>
+            <Link href="/admin/notifications"><button className="btn btn-ghost btn-sm">Notifications →</button></Link>
+          </div>
         </div>
 
         {/* Slot reference */}
