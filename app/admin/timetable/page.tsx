@@ -44,9 +44,10 @@ export default function TimetablePage() {
   const [secLoading, setSecLoading] = useState(false)
 
   // TT form
-  const [ttForm,    setTtForm]    = useState({ section_id:'', day_of_week:'1', slot_id:'1', subject_name:'', teacher_name:'', teacher_email:'' })
+  const [ttForm,    setTtForm]    = useState({ section_id:'', day_of_week:'1', slot_id:'1', subject_name:'', teacher_name:'', teacher_email:'', teacher_id:'' })
   const [ttLoading, setTtLoading] = useState(false)
   const [editEntry, setEditEntry] = useState<TTEntry | null>(null)
+  const [teachers,  setTeachers]  = useState<{id:string;full_name:string;email:string;designation:string;department:string}[]>([])
 
   const router   = useRouter()
   const supabase = createClient()
@@ -66,14 +67,16 @@ export default function TimetablePage() {
   }, [])
 
   async function loadAll() {
-    const [d, s, t] = await Promise.all([
+    const [d, s, t, tc] = await Promise.all([
       supabase.from('departments').select('*').order('name'),
       supabase.from('sections').select('*').order('department').order('year_label').order('section_code'),
       supabase.from('timetable_entries').select('*'),
+      supabase.from('teachers').select('id,full_name,email,designation,department').order('full_name'),
     ])
     setDepts(d.data || [])
     setSections(s.data || [])
     setEntries(t.data || [])
+    setTeachers(tc.data || [])
   }
 
   // ── Dept handlers ──
@@ -135,17 +138,19 @@ export default function TimetablePage() {
   // ── TT handlers ──
   async function saveTTEntry(e: React.FormEvent) {
     e.preventDefault()
-    if (!ttForm.section_id || !ttForm.subject_name || !ttForm.teacher_name || !ttForm.teacher_email) {
-      toast.error('Fill all fields'); return
+    if (!ttForm.section_id || !ttForm.subject_name || !ttForm.teacher_id) {
+      toast.error('Select section, subject and teacher'); return
     }
     setTtLoading(true)
+    const teacher = teachers.find(t => t.id === ttForm.teacher_id)
     const payload = {
       section_id:    ttForm.section_id,
       day_of_week:   parseInt(ttForm.day_of_week),
       slot_id:       parseInt(ttForm.slot_id),
       subject_name:  ttForm.subject_name,
-      teacher_name:  ttForm.teacher_name,
-      teacher_email: ttForm.teacher_email,
+      teacher_name:  teacher?.full_name || '',
+      teacher_email: teacher?.email || '',
+      teacher_id:    ttForm.teacher_id,
     }
     if (editEntry) {
       await supabase.from('timetable_entries').update(payload).eq('id', editEntry.id)
@@ -364,12 +369,25 @@ export default function TimetablePage() {
                   <input className="inp" placeholder="e.g. Data Structures" value={ttForm.subject_name} onChange={e => setTtForm(f=>({...f,subject_name:e.target.value}))} required />
                 </div>
                 <div>
-                  <label className="lbl">Teacher name *</label>
-                  <input className="inp" placeholder="Dr. R. Kumar" value={ttForm.teacher_name} onChange={e => setTtForm(f=>({...f,teacher_name:e.target.value}))} required />
-                </div>
-                <div>
-                  <label className="lbl">Teacher email *</label>
-                  <input className="inp" type="email" placeholder="teacher@srmist.edu.in" value={ttForm.teacher_email} onChange={e => setTtForm(f=>({...f,teacher_email:e.target.value}))} required />
+                  <label className="lbl">Teacher *</label>
+                  {teachers.length === 0 ? (
+                    <div style={{ padding:'10px 12px', background:'var(--bg-2)', border:'1px solid var(--line)', borderRadius:'var(--r)', fontSize:12, color:'var(--t3)' }}>
+                      No teachers found. <Link href="/admin/teachers" style={{ color:'var(--accent-2)' }}>Add teachers first →</Link>
+                    </div>
+                  ) : (
+                    <select className="inp" value={ttForm.teacher_id} onChange={e => setTtForm(f=>({...f,teacher_id:e.target.value}))} required>
+                      <option value="">Select teacher</option>
+                      {teachers.map(t => (
+                        <option key={t.id} value={t.id}>
+                          {t.full_name}{t.designation ? ` · ${t.designation}` : ''}{t.department ? ` (${t.department})` : ''}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                  {ttForm.teacher_id && (() => {
+                    const t = teachers.find(tc => tc.id === ttForm.teacher_id)
+                    return t ? <div style={{ fontSize:11, color:'var(--t3)', marginTop:4 }}>{t.email}</div> : null
+                  })()}
                 </div>
                 <div style={{ display:'flex', gap:8 }}>
                   <button className="btn btn-primary" style={{ flex:1 }} type="submit" disabled={ttLoading}>
@@ -412,7 +430,7 @@ export default function TimetablePage() {
                           <td style={{ display:'flex', gap:4 }}>
                             <button className="btn btn-ghost btn-sm" onClick={() => {
                               setEditEntry(e)
-                              setTtForm({ section_id:e.section_id, day_of_week:String(e.day_of_week), slot_id:String(e.slot_id), subject_name:e.subject_name, teacher_name:e.teacher_name, teacher_email:e.teacher_email })
+                              setTtForm({ section_id:e.section_id, day_of_week:String(e.day_of_week), slot_id:String(e.slot_id), subject_name:e.subject_name, teacher_name:e.teacher_name, teacher_email:e.teacher_email, teacher_id:(e as any).teacher_id || '' })
                             }}>Edit</button>
                             <button className="btn btn-danger btn-sm" onClick={async () => {
                               await supabase.from('timetable_entries').delete().eq('id', e.id)
