@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(code-review-graph --help)",
+      "Bash(code-review-graph build:*)",
+      "Bash(npx vercel:*)"
+    ]
+  }
+}

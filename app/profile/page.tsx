@@ -44,7 +44,7 @@ export default function ProfilePage() {
     <div className="page">
       <Navbar profile={profile} />
       <div className="wrap" style={{ maxWidth:520, paddingTop:32, paddingBottom:60 }}>
-        <Link href={dash} style={{ fontSize:12, color:'var(--t3)', textDecoration:'none', display:'inline-block', marginBottom:20 }}>← Dashboard</Link>
+        <Link href={dash} className="back-link">← Dashboard</Link>
         <h1 style={{ marginBottom:4 }}>Profile</h1>
         <p style={{ fontSize:13, color:'var(--t3)', marginBottom:24 }}>{profile.email} · <span style={{ textTransform:'capitalize' }}>{profile.role}</span></p>
 

@@ -14,13 +14,20 @@ export function toMinutes(t: string): number {
   return h * 60 + m
 }
 
+// Teachers are notified if their slot overlaps with the event OR is within
+// BUFFER minutes of either boundary (e.g. slot ends at 11:10, event starts
+// at 11:12 → 2-min gap → still notify because student just left that class).
+const OVERLAP_BUFFER_MINS = 5
+
 export function getOverlappingSlots(eventStart: string, eventEnd: string) {
   const evStart = toMinutes(eventStart)
   const evEnd   = toMinutes(eventEnd)
   return LECTURE_SLOTS.filter(slot => {
     const slotStart = toMinutes(slot.start)
     const slotEnd   = toMinutes(slot.end)
-    return slotStart < evEnd && slotEnd > evStart
+    // Expand the slot window by BUFFER on both sides before checking overlap
+    return (slotStart - OVERLAP_BUFFER_MINS) < evEnd &&
+           (slotEnd   + OVERLAP_BUFFER_MINS) > evStart
   })
 }
 

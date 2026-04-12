@@ -45,24 +45,29 @@ export default function LoginPage() {
 
     toast.success('Signed in!')
 
-    if (role === 'hod')          window.location.href = '/dashboard/hod'
+    // First-login gate — admin-created accounts must set their own password
+    if (data.user.user_metadata?.must_change_password) {
+      window.location.href = '/auth/change-password'
+      return
+    }
+
+    if      (role === 'hod')     window.location.href = '/dashboard/hod'
     else if (role === 'faculty') window.location.href = '/dashboard/faculty'
+    else if (role === 'admin')   window.location.href = '/admin/accounts'
     else                         window.location.href = '/dashboard/student'
   }
 
   return (
-    <div style={{ minHeight:'100vh', background:'var(--bg)', display:'flex', flexDirection:'column' }}>
-      <header style={{ height:52, borderBottom:'1px solid var(--line)', display:'flex', alignItems:'center', padding:'0 24px' }}>
-        <Link href="/" style={{ fontSize:15, fontWeight:700, letterSpacing:'-0.04em', textDecoration:'none', color:'var(--t1)' }}>
-          Event<span style={{ color:'#8b5cf6' }}>OD</span>
-        </Link>
+    <div style={{ minHeight:'100vh', background:'var(--bg)', display:'flex', flexDirection:'column', backgroundImage:'radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.08) 0%, transparent 55%)' }}>
+      <header className="nav">
+        <Link href="/" className="nav-logo">Event<span>OD</span></Link>
       </header>
 
       <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'40px 20px' }}>
         <div className="fade-up" style={{ width:'100%', maxWidth:360 }}>
-          <div style={{ marginBottom:28 }}>
-            <h1 style={{ fontSize:20, fontWeight:600, letterSpacing:'-0.03em', marginBottom:6 }}>Sign in</h1>
-            <p style={{ fontSize:13, color:'var(--t3)' }}>SRM Institute · EventOD</p>
+          <div style={{ marginBottom:28, textAlign:'center' }}>
+            <h1 style={{ fontSize:22, fontWeight:600, letterSpacing:'-0.03em', marginBottom:6 }}>Welcome back</h1>
+            <p style={{ fontSize:13, color:'var(--t3)' }}>Sign in to your EventOD account</p>
           </div>
 
           <div className="card card-p">

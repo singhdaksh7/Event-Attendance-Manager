@@ -58,7 +58,7 @@ export default function TimetablePage() {
       const user = session?.user
       if (!user) { router.push('/auth/login'); return }
       const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).single()
-      if (!p || (p.role !== 'faculty' && p.role !== 'hod')) { router.push('/dashboard/student'); return }
+      if (!p || p.role !== 'admin') { router.push('/dashboard/student'); return }
       setProfile(p)
       await loadAll()
       setLoading(false)

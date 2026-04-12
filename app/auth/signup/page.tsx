@@ -6,12 +6,6 @@ import toast from 'react-hot-toast'
 import { createClient } from '@/lib/supabase/client'
 import type { Role } from '@/lib/types'
 
-const ROLES: { value: Role; label: string; desc: string }[] = [
-  { value: 'student', label: 'Student',  desc: 'Register & get OD' },
-  { value: 'faculty', label: 'Faculty',  desc: 'Approve events & OD' },
-  { value: 'hod',     label: 'HOD',      desc: 'Final OD authority' },
-]
-
 export default function SignupPage() {
   const [form, setForm] = useState({ full_name: '', email: '', password: '', role: 'student' as Role, department: '', reg_number: '', phone: '' })
   const [loading, setLoading] = useState(false)
@@ -32,31 +26,26 @@ export default function SignupPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
-      <header style={{ height: 52, borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', padding: '0 24px' }}>
-        <Link href="/" style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.04em', textDecoration: 'none', color: 'var(--t1)' }}>
-          Event<span style={{ color: '#8b5cf6' }}>OD</span>
-        </Link>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', backgroundImage: 'radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.08) 0%, transparent 55%)' }}>
+      <header className="nav">
+        <Link href="/" className="nav-logo">Event<span>OD</span></Link>
       </header>
 
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
         <div className="fade-up" style={{ width: '100%', maxWidth: 400 }}>
-          <div style={{ marginBottom: 28 }}>
-            <h1 style={{ fontSize: 20, fontWeight: 600, letterSpacing: '-0.03em', marginBottom: 6 }}>Create account</h1>
+          <div style={{ marginBottom: 28, textAlign: 'center' }}>
+            <h1 style={{ fontSize: 22, fontWeight: 600, letterSpacing: '-0.03em', marginBottom: 6 }}>Create account</h1>
             <p style={{ fontSize: 13, color: 'var(--t3)' }}>SRM Institute · EventOD</p>
           </div>
 
-          {/* Role selector */}
-          <div style={{ marginBottom: 20 }}>
-            <label className="lbl">I am a</label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 6 }}>
-              {ROLES.map(r => (
-                <button key={r.value} type="button" onClick={() => set('role', r.value)}
-                  style={{ padding: '10px 8px', borderRadius: 'var(--r)', cursor: 'pointer', textAlign: 'center', fontFamily: 'inherit', transition: 'all 0.12s', border: `1px solid ${form.role === r.value ? 'var(--accent-2)' : 'var(--line-2)'}`, background: form.role === r.value ? 'rgba(124,58,237,0.12)' : 'var(--bg-1)' }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: form.role === r.value ? '#a78bfa' : 'var(--t2)' }}>{r.label}</div>
-                  <div style={{ fontSize: 10, color: 'var(--t4)', marginTop: 2, lineHeight: 1.3 }}>{r.desc}</div>
-                </button>
-              ))}
+          {/* Student-only notice */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 14px', background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.15)', borderRadius: 'var(--r)', marginBottom: 20 }}>
+            <span style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>🎓</span>
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#a78bfa', marginBottom: 2 }}>Student registration</div>
+              <div style={{ fontSize: 11, color: 'var(--t3)', lineHeight: 1.5 }}>
+                Faculty and HOD accounts are created by the administrator. Contact your admin if you need access.
+              </div>
             </div>
           </div>
 

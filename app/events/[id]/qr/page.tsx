@@ -49,7 +49,7 @@ export default function EventQRPage() {
     <div className="page">
       <Navbar profile={profile} />
       <div className="wrap" style={{ maxWidth:480, paddingTop:32, paddingBottom:60 }}>
-        <Link href="/dashboard/student" style={{ fontSize:12, color:'var(--t3)', textDecoration:'none', display:'inline-block', marginBottom:20 }}>← Back</Link>
+        <Link href="/dashboard/student" className="back-link">← Back</Link>
         <h1 style={{ marginBottom:4 }}>Event QR</h1>
         <p style={{ fontSize:13, color:'var(--t3)', marginBottom:24 }}>{event?.title} · {regCount} registered</p>
 

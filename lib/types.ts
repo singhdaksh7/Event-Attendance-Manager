@@ -1,4 +1,4 @@
-export type Role = 'student' | 'faculty' | 'hod'
+export type Role = 'student' | 'faculty' | 'hod' | 'admin'
 export type EventStatus = 'draft' | 'pending_approval' | 'approved' | 'rejected' | 'completed'
 export type EventType = 'technical' | 'hackathon' | 'cultural' | 'sports' | 'other'
 export type ODStatus = 'not_generated' | 'pending' | 'faculty_approved' | 'hod_approved' | 'rejected'

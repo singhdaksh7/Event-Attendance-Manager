@@ -35,16 +35,17 @@ export default function StudentDashboard() {
 
   if (loading || !profile) return (
     <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ display: 'flex', gap: 5 }}>{[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--t4)', animation: 'bounce 1.2s ease-in-out infinite', animationDelay: `${i*0.2}s` }} />)}</div>
-      <style>{`@keyframes bounce{0%,80%,100%{transform:scale(0.6);opacity:.4}40%{transform:scale(1);opacity:1}}`}</style>
+      <div className="loading-dots">
+        {[0,1,2].map(i => <div key={i} className="loading-dot" style={{ animationDelay:`${i*0.2}s` }} />)}
+      </div>
     </div>
   )
 
   const stats = [
-    { l: 'Events created', v: myEvents.length },
-    { l: 'Registered',     v: myRegs.length },
-    { l: 'Attended',       v: myRegs.filter(r => r.attended).length },
-    { l: 'OD approved',    v: myRegs.filter(r => r.od_status === 'hod_approved').length },
+    { l: 'Events created', v: myEvents.length,                                        c: 'var(--t1)'    },
+    { l: 'Registered',     v: myRegs.length,                                           c: 'var(--t1)'    },
+    { l: 'Attended',       v: myRegs.filter(r => r.attended).length,                  c: '#34d399'      },
+    { l: 'OD approved',    v: myRegs.filter(r => r.od_status === 'hod_approved').length, c: '#a78bfa'    },
   ]
 
   return (
@@ -62,10 +63,10 @@ export default function StudentDashboard() {
         </div>
 
         {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginBottom: 32 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8, marginBottom: 32 }}>
           {stats.map(s => (
             <div key={s.l} className="stat">
-              <div className="stat-n">{s.v}</div>
+              <div className="stat-n" style={{ color: s.c }}>{s.v}</div>
               <div className="stat-l">{s.l}</div>
             </div>
           ))}
@@ -78,8 +79,9 @@ export default function StudentDashboard() {
             <Link href="/events/create" style={{ fontSize: 12, color: 'var(--accent-2)', textDecoration: 'none' }}>+ Create</Link>
           </div>
           {myEvents.length === 0 ? (
-            <div className="card card-p" style={{ textAlign: 'center', padding: '40px 20px' }}>
-              <p style={{ fontSize: 13, color: 'var(--t3)', marginBottom: 14 }}>No events created yet.</p>
+            <div className="card empty-state">
+              <div className="empty-state-icon">📅</div>
+              <p style={{ marginBottom: 14 }}>No events created yet.</p>
               <Link href="/events/create"><button className="btn btn-primary btn-sm">Create first event</button></Link>
             </div>
           ) : (
@@ -109,7 +111,8 @@ export default function StudentDashboard() {
         <div>
           <h2 style={{ marginBottom: 12 }}>Registered events</h2>
           {myRegs.length === 0 ? (
-            <div className="card card-p" style={{ textAlign: 'center', color: 'var(--t3)', fontSize: 13 }}>
+            <div className="card empty-state">
+              <div className="empty-state-icon">🎫</div>
               Scan an event QR code to register.
             </div>
           ) : (

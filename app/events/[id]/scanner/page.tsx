@@ -195,39 +195,41 @@ export default function ScannerPage() {
   }
 
   if (!profile || !event) return (
-    <div className="page-bg min-h-screen flex items-center justify-center">
-      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--t4)' }}>Loading...</div>
+    <div className="page" style={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <div style={{ display:'flex', gap:5 }}>
+        {[0,1,2].map(i => <div key={i} className="loading-dot" style={{ animationDelay:`${i*0.2}s` }} />)}
+      </div>
     </div>
   )
 
   const isActive = cameraState === 'active'
 
   return (
-    <div className="page-bg min-h-screen">
+    <div className="page">
       <Navbar profile={profile} />
-      <div className="container-app" style={{ paddingTop: '2rem', paddingBottom: '4rem', maxWidth: 600 }}>
+      <div className="wrap" style={{ paddingTop: 32, paddingBottom: 60, maxWidth: 600 }}>
 
-        <Link href="/dashboard/student" style={{ fontSize: 12, color: 'var(--t3)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 20 }}>← Dashboard</Link>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Attendance Scanner</h1>
-        <p style={{ fontSize: 13, color: 'var(--t3)', marginBottom: '1.75rem' }}>{event.title} · {event.venue}</p>
+        <Link href="/dashboard/student" className="back-link">← Dashboard</Link>
+        <h1 style={{ marginBottom: 4 }}>Attendance Scanner</h1>
+        <p style={{ fontSize: 13, color: 'var(--t3)', marginBottom: 28 }}>{event.title} · {event.venue}</p>
 
         {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginBottom: 24 }}>
           {[
-            { l: 'Registered', v: allRegs.length,                c: 'var(--t1)'         },
-            { l: 'Present',    v: attendedCount,                  c: 'var(--teal-light)' },
-            { l: 'Absent',     v: allRegs.length - attendedCount, c: '#fbbf24'           },
+            { l: 'Registered', v: allRegs.length,                c: 'var(--t1)'    },
+            { l: 'Present',    v: attendedCount,                  c: '#34d399'      },
+            { l: 'Absent',     v: allRegs.length - attendedCount, c: '#fbbf24'      },
           ].map(s => (
-            <div key={s.l} className="stat-card">
-              <div className="stat-num" style={{ color: s.c }}>{s.v}</div>
-              <div className="stat-lbl">{s.l}</div>
+            <div key={s.l} className="stat">
+              <div className="stat-n" style={{ color: s.c }}>{s.v}</div>
+              <div className="stat-l">{s.l}</div>
             </div>
           ))}
         </div>
 
         {/* Camera card */}
-        <div className="card" style={{ padding: '1.25rem', marginBottom: '1rem' }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700, marginBottom: 12 }}>
+        <div className="card" style={{ padding: 20, marginBottom: 10 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 12 }}>
             Camera QR scanner
           </div>
 
@@ -255,7 +257,7 @@ export default function ScannerPage() {
             <div style={{ textAlign: 'center', padding: '2rem 0' }}>
               <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginBottom: 12 }}>
                 {[0,1,2].map(i => (
-                  <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: '#6366f1', animation: 'bounce 1.2s ease-in-out infinite', animationDelay: `${i * 0.2}s` }} />
+                  <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent-2)', animation: 'bounce 1.2s ease-in-out infinite', animationDelay: `${i * 0.2}s` }} />
                 ))}
               </div>
               <p style={{ fontSize: 13, color: 'var(--t3)' }}>Starting camera...</p>
@@ -316,14 +318,14 @@ export default function ScannerPage() {
         <canvas ref={canvasRef} style={{ display: 'none' }} />
 
         {/* Manual input */}
-        <div className="card" style={{ padding: '1.25rem', marginBottom: '1.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700, marginBottom: 4 }}>Manual input</div>
+        <div className="card" style={{ padding: 20, marginBottom: 24 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>Manual input</div>
           <p style={{ fontSize: 12, color: 'var(--t3)', marginBottom: 10, lineHeight: 1.5 }}>
             Student taps <strong style={{ color: 'var(--t2)' }}>Copy QR data</strong> on their registration page → paste here.
           </p>
           <form onSubmit={async e => { e.preventDefault(); const v = manualInput.trim(); if (v) { await processQR(v); setManualInput('') } }}
             style={{ display: 'flex', gap: 8 }}>
-            <input className="inp" style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: 12 }}
+            <input className="inp" style={{ flex: 1, fontFamily: 'monospace', fontSize: 12 }}
               placeholder='{"type":"attendance","registrationId":"...","regNumber":"..."}'
               value={manualInput} onChange={e => setManualInput(e.target.value)} />
             <button className="btn btn-primary btn-sm" type="submit" disabled={processing}>Mark</button>
@@ -333,21 +335,21 @@ export default function ScannerPage() {
         {/* Scanned list */}
         {scanned.length > 0 && (
           <div>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700, marginBottom: 10 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 10 }}>
               Scanned this session ({scanned.length})
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {scanned.map(({ reg, justMarked }) => (
                 <div key={reg.id} className="card fade-in"
-                  style={{ padding: '0.875rem 1rem', display: 'flex', alignItems: 'center', gap: 12, borderColor: justMarked ? 'rgba(45,212,191,0.3)' : 'var(--border-dim)' }}>
-                  <div style={{ width: 38, height: 38, borderRadius: '50%', background: justMarked ? 'rgba(45,212,191,0.12)' : 'var(--bg-overlay)', border: `1px solid ${justMarked ? 'rgba(45,212,191,0.3)' : 'var(--border-dim)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 15, color: justMarked ? 'var(--teal-light)' : 'var(--indigo-light)', flexShrink: 0 }}>
+                  style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, borderColor: justMarked ? 'rgba(16,185,129,0.3)' : 'var(--line)' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: justMarked ? 'rgba(16,185,129,0.1)' : 'var(--bg-2)', border: `1px solid ${justMarked ? 'rgba(16,185,129,0.25)' : 'var(--line)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 14, color: justMarked ? '#34d399' : 'var(--accent-2)', flexShrink: 0 }}>
                     {reg.full_name.charAt(0).toUpperCase()}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14 }}>{reg.full_name}</div>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--t3)', marginTop: 1 }}>{reg.reg_number} · {reg.department}</div>
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{reg.full_name}</div>
+                    <div style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--t3)', marginTop: 1 }}>{reg.reg_number} · {reg.department}</div>
                   </div>
-                  <span className={`badge ${justMarked ? 'badge-teal' : 'badge-gray'}`}>
+                  <span className={`badge ${justMarked ? 'badge-green' : 'badge-gray'}`}>
                     {justMarked ? '✓ Marked' : 'Already present'}
                   </span>
                 </div>
@@ -357,18 +359,7 @@ export default function ScannerPage() {
         )}
       </div>
 
-      <style>{`
-        @keyframes scanline {
-          0%   { top: 16px;  opacity: 0; }
-          10%  { opacity: 1; }
-          90%  { opacity: 1; }
-          100% { top: 184px; opacity: 0; }
-        }
-        @keyframes bounce {
-          0%, 80%, 100% { transform: scale(0.6); opacity: .4; }
-          40%            { transform: scale(1);   opacity: 1;  }
-        }
-      `}</style>
+      {/* scanline & bounce are defined in globals.css */}
     </div>
   )
 }

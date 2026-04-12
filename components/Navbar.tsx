@@ -11,8 +11,8 @@ export default function Navbar({ profile }: { profile: Profile }) {
   const router = useRouter()
   const supabase = createClient()
 
-  const dash = profile.role === 'hod' ? '/dashboard/hod' : profile.role === 'faculty' ? '/dashboard/faculty' : '/dashboard/student'
-  const roleColor = profile.role === 'hod' ? '#fbbf24' : profile.role === 'faculty' ? '#34d399' : '#a78bfa'
+  const dash = profile.role === 'hod' ? '/dashboard/hod' : profile.role === 'faculty' ? '/dashboard/faculty' : profile.role === 'admin' ? '/admin/accounts' : '/dashboard/student'
+  const roleColor = profile.role === 'hod' ? '#fbbf24' : profile.role === 'faculty' ? '#34d399' : profile.role === 'admin' ? '#f87171' : '#a78bfa'
 
   async function signOut() {
     await supabase.auth.signOut()
@@ -22,8 +22,14 @@ export default function Navbar({ profile }: { profile: Profile }) {
 
   const menuItems = [
     { label: 'Dashboard', href: dash },
-    { label: 'Profile',   href: '/profile' },
+    ...(profile.role !== 'admin' ? [{ label: 'Profile', href: '/profile' }] : []),
+    ...(profile.role === 'admin' ? [
+      { label: 'Accounts',  href: '/admin/accounts' },
+    ] : []),
     ...(profile.role === 'faculty' || profile.role === 'hod' ? [
+      { label: 'My Timetable', href: '/my-timetable' },
+    ] : []),
+    ...(profile.role === 'admin' ? [
       { label: 'Timetable',        href: '/admin/timetable' },
       { label: 'Import timetable', href: '/admin/timetable-import' },
       { label: 'Teachers',         href: '/admin/teachers' },
@@ -36,10 +42,20 @@ export default function Navbar({ profile }: { profile: Profile }) {
       <Link href={dash} className="nav-logo">Event<span>OD</span></Link>
 
       <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-        {/* Quick links for faculty/hod */}
+        {/* Quick links */}
         {(profile.role === 'faculty' || profile.role === 'hod') && (
+          <Link href="/my-timetable">
+            <button className="btn btn-ghost btn-sm" style={{ fontSize:11 }}>My Timetable</button>
+          </Link>
+        )}
+        {profile.role === 'admin' && (
           <Link href="/admin/timetable">
             <button className="btn btn-ghost btn-sm" style={{ fontSize:11 }}>Timetable</button>
+          </Link>
+        )}
+        {profile.role === 'admin' && (
+          <Link href="/admin/accounts">
+            <button className="btn btn-ghost btn-sm" style={{ fontSize:11 }}>Accounts</button>
           </Link>
         )}
 
@@ -61,18 +77,12 @@ export default function Navbar({ profile }: { profile: Profile }) {
                   </div>
                 </div>
                 {menuItems.map(item => (
-                  <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
-                    <div style={{ padding:'10px 14px', fontSize:13, color:'var(--t2)', cursor:'pointer' }}
-                      onMouseEnter={e => (e.currentTarget.style.background='var(--bg-3)')}
-                      onMouseLeave={e => (e.currentTarget.style.background='transparent')}>
-                      {item.label}
-                    </div>
+                  <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="nav-menu-item">
+                    {item.label}
                   </Link>
                 ))}
                 <div style={{ borderTop:'1px solid var(--line)' }}>
-                  <div onClick={signOut} style={{ padding:'10px 14px', fontSize:13, color:'#f87171', cursor:'pointer' }}
-                    onMouseEnter={e => (e.currentTarget.style.background='var(--bg-3)')}
-                    onMouseLeave={e => (e.currentTarget.style.background='transparent')}>
+                  <div onClick={signOut} className="nav-menu-item nav-menu-item-danger">
                     Sign out
                   </div>
                 </div>

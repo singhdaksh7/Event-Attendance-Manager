@@ -49,7 +49,7 @@ export default function EventDetailPage() {
     <div className="page">
       <Navbar profile={profile} />
       <div className="wrap" style={{ paddingTop:32, paddingBottom:60 }}>
-        <Link href={backPath} style={{ fontSize:12, color:'var(--t3)', textDecoration:'none', display:'inline-block', marginBottom:20 }}>← Back</Link>
+        <Link href={backPath} className="back-link">← Back</Link>
 
         {/* Header */}
         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:16, marginBottom:24, flexWrap:'wrap' }}>

@@ -54,7 +54,7 @@ export default function ODSlipPage() {
     <div style={{ minHeight:'100vh', background:'var(--bg)', padding:'32px 20px' }}>
       {/* Controls */}
       <div className="no-print" style={{ maxWidth:680, margin:'0 auto 16px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-        <Link href="/dashboard/student" style={{ fontSize:12, color:'var(--t3)', textDecoration:'none' }}>← Dashboard</Link>
+        <Link href="/dashboard/student" className="back-link">← Dashboard</Link>
         <button className="btn btn-primary btn-sm" onClick={() => window.print()}>Print / Save PDF</button>
       </div>
 

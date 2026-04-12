@@ -74,7 +74,7 @@ export default function TimetableImportPage() {
       const user = session?.user
       if (!user) { router.push('/auth/login'); return }
       const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).single()
-      if (!p || (p.role !== 'faculty' && p.role !== 'hod')) { router.push('/dashboard/student'); return }
+      if (!p || p.role !== 'admin') { router.push('/dashboard/student'); return }
       setProfile(p)
       const [s, t] = await Promise.all([
         supabase.from('sections').select('*').order('display_name'),

@@ -46,7 +46,7 @@ export default function TeachersPage() {
       const user = session?.user
       if (!user) { router.push('/auth/login'); return }
       const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).single()
-      if (!p || (p.role !== 'faculty' && p.role !== 'hod')) { router.push('/dashboard/student'); return }
+      if (!p || p.role !== 'admin') { router.push('/dashboard/student'); return }
       setProfile(p)
       await loadTeachers()
       setLoading(false)
@@ -204,7 +204,7 @@ export default function TeachersPage() {
           <button className={`tab-btn ${tab==='add'?'on':''}`} onClick={() => { setTab('add'); setEditId(null); setForm(EMPTY_FORM) }}>
             {editId ? 'Edit teacher' : '+ Add teacher'}
           </button>
-          {profile.role === 'hod' && (
+          {profile.role === 'admin' && (
             <button className={`tab-btn ${tab==='csv'?'on':''}`} onClick={() => setTab('csv')}>
               Upload CSV
             </button>
